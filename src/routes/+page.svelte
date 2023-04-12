@@ -1,121 +1,53 @@
 <script lang="ts">
-	// import headbreaker from 'headbreaker';
+	import { stringify } from 'postcss';
 	import { onMount } from 'svelte';
 
-	let imageInput: any;
+	let playerName: string = '';
+	let dialogBox: HTMLDialogElement;
 
 	onMount(() => {
-		createPuzzle();
-	});
-
-	let createPuzzle = (imgSrc: any = '') => {
-		let img = new Image();
-
-		if (!imgSrc) {
-			img.src = '/scenery.jpg';
-		} else {
-			img.src = imgSrc;
+		let puzzler = localStorage.getItem('puzzler');
+		if (puzzler) {
+			puzzler = JSON.parse(puzzler);
+			if (puzzler?.name) {
+				playerName = puzzler?.name;
+			}
 		}
 
-		let canvasWidth: number = 900,
-			canvasHeight: number = 900;
-
-		let puzzleWidth: number = 700,
-			puzzleHeight: number = 700;
-
-		let imgWidth: number,
-			imgHeight: number,
-			rows: number,
-			columns: number,
-			pieceSize: number = 100,
-			scaleX: number,
-			scaleY: number,
-			imgType: 'landscape' | 'portrait';
-
-		img.onload = () => {
-			imgWidth = img.naturalWidth;
-			imgHeight = img.naturalHeight;
-
-			imgWidth >= imgHeight ? (imgType = 'landscape') : (imgType = 'portrait');
-
-			// debugger;
-
-			if (imgType === 'portrait') {
-				if (imgHeight > puzzleHeight) {
-					scaleY = Math.round(imgHeight / puzzleHeight);
-					imgHeight = puzzleHeight;
-					imgWidth = Math.round(imgWidth / scaleY);
-				}
-			} else if (imgType === 'landscape') {
-				if (imgWidth > puzzleWidth) {
-					scaleX = Math.round(imgWidth / puzzleWidth);
-					imgWidth = puzzleWidth;
-					imgHeight = Math.round(imgHeight / scaleX);
-				}
-			}
-
-			let heightDiff = imgHeight % pieceSize;
-			let widthDiff = imgWidth % pieceSize;
-
-			if (heightDiff !== 0) {
-				if (imgHeight + heightDiff > puzzleHeight) {
-					imgHeight = Math.floor(imgHeight / pieceSize);
-					console.log('imgHeight', imgHeight);
-				} else {
-					imgHeight = imgHeight + heightDiff;
-					console.log('imgHeight', imgHeight);
-				}
-			}
-
-			if (widthDiff !== 0) {
-				if (imgWidth + widthDiff > puzzleWidth) {
-					imgWidth = Math.floor(imgWidth / pieceSize);
-				} else {
-					imgWidth = imgWidth + widthDiff;
-				}
-			}
-
-			rows = Math.floor(imgWidth / pieceSize);
-			columns = Math.floor(imgHeight / pieceSize);
-
-			const autogen = new headbreaker.Canvas('puzzle', {
-				width: canvasWidth,
-				height: canvasHeight,
-				pieceSize: pieceSize,
-				proximity: 20,
-				borderFill: 10,
-				strokeWidth: 1.5,
-				lineSoftness: 0.18,
-				image: img,
-				outline: new headbreaker.outline.Rounded(),
-				preventOffstageDrag: true,
-				fixed: true
-			});
-
-			if (imgType === 'portrait') {
-				autogen.adjustImagesToPuzzleHeight();
-			} else {
-				autogen.adjustImagesToPuzzleWidth();
-			}
-			autogen.autogenerate({
-				insertsGenerator: headbreaker.generators.flipflop,
-				horizontalPiecesCount: rows,
-				verticalPiecesCount: columns
-			});
-
-			// autogen.shuffle(0.7);
-			autogen.draw();
-		};
-	};
+		if (!playerName) {
+			dialogBox.showModal();
+		}
+	});
 </script>
 
-<input
-	bind:this={imageInput}
-	type="file"
-	name="imageInput"
-	id="imageInput"
-	on:change={() => createPuzzle(URL.createObjectURL(imageInput.files[0]))}
-	class="mt-10 ml-10"
-/>
+<dialog bind:this={dialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>
+	<form
+		method="dialog"
+		on:submit={() => localStorage.setItem('puzzler', JSON.stringify({ name: playerName }))}
+	>
+		<h2>Hello there! What do we call you?</h2>
+		<input
+			type="text"
+			id="playerName"
+			placeholder="Enter name"
+			bind:value={playerName}
+			class="mt-5 p-2"
+		/>
+		<button type="submit" disabled={!playerName} class="block mt-5 btn mx-auto">Let me in</button>
+	</form>
+</dialog>
 
-<div id="puzzle" class="border-4 my-10 mx-auto w-max" />
+{#if playerName}
+	<section class="p-10">
+		<h1>Hello {playerName}! <br /> What are you upto today?</h1>
+		<button class="btn">Play</button>
+		<button class="btn">Create</button>
+		<button class="btn">Contend</button>
+	</section>
+{/if}
+
+<style lang="postcss">
+	.btn {
+		@apply p-2 border-2 border-blue-600 rounded-md;
+	}
+</style>
