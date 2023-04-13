@@ -2,26 +2,33 @@
 	// import headbreaker from 'headbreaker';
 	import { onMount } from 'svelte';
 
-	let imageInput: any;
+	export let imageInput: any;
 
 	onMount(() => {
-		createPuzzle();
+		createPuzzle(imageInput);
 	});
+
+	$: {
+		console.log('image input', imageInput);
+		if (imageInput) {
+			createPuzzle(imageInput);
+		}
+	}
 
 	let createPuzzle = (imgSrc: any = '') => {
 		let img = new Image();
 
 		if (!imgSrc) {
-			img.src = '/scenery.jpg';
+			img.src = '/scenery-1.jpg';
 		} else {
 			img.src = imgSrc;
 		}
 
-		let canvasWidth: number = 900,
-			canvasHeight: number = 900;
+		let canvasWidth: number = 500,
+			canvasHeight: number = 500;
 
-		let puzzleWidth: number = 700,
-			puzzleHeight: number = 700;
+		let puzzleWidth: number = 400,
+			puzzleHeight: number = 400;
 
 		let imgWidth: number,
 			imgHeight: number,
@@ -54,29 +61,34 @@
 				}
 			}
 
-			let heightDiff = imgHeight % pieceSize;
-			let widthDiff = imgWidth % pieceSize;
+			const adjustPicture = () => {
+				let heightDiff = imgHeight % pieceSize;
+				let widthDiff = imgWidth % pieceSize;
 
-			if (heightDiff !== 0) {
-				if (imgHeight + heightDiff > puzzleHeight) {
-					imgHeight = Math.floor(imgHeight / pieceSize);
-					console.log('imgHeight', imgHeight);
-				} else {
-					imgHeight = imgHeight + heightDiff;
-					console.log('imgHeight', imgHeight);
+				if (heightDiff !== 0) {
+					if (imgHeight + heightDiff > puzzleHeight) {
+						imgHeight = Math.floor(imgHeight / pieceSize);
+						console.log('imgHeight', imgHeight);
+					} else {
+						imgHeight = imgHeight + heightDiff;
+						console.log('imgHeight', imgHeight);
+					}
 				}
-			}
 
-			if (widthDiff !== 0) {
-				if (imgWidth + widthDiff > puzzleWidth) {
-					imgWidth = Math.floor(imgWidth / pieceSize);
-				} else {
-					imgWidth = imgWidth + widthDiff;
+				if (widthDiff !== 0) {
+					if (imgWidth + widthDiff > puzzleWidth) {
+						imgWidth = Math.floor(imgWidth / pieceSize);
+					} else {
+						imgWidth = imgWidth + widthDiff;
+					}
 				}
-			}
 
-			rows = Math.floor(imgWidth / pieceSize);
-			columns = Math.floor(imgHeight / pieceSize);
+				rows = Math.floor(imgWidth / pieceSize);
+				columns = Math.floor(imgHeight / pieceSize);
+				return;
+			};
+
+			adjustPicture();
 
 			const autogen = new headbreaker.Canvas('puzzle', {
 				width: canvasWidth,
@@ -93,29 +105,24 @@
 			});
 
 			if (imgType === 'portrait') {
+				console.log('here in portrait');
 				autogen.adjustImagesToPuzzleHeight();
+				// autogen.adjustImagesToPuzzleWidth();
 			} else {
-				autogen.adjustImagesToPuzzleWidth();
+				console.log('here in landscape');
+				// autogen.adjustImagesToPuzzleWidth();
+				autogen.adjustImagesToPuzzleHeight();
 			}
 			autogen.autogenerate({
 				insertsGenerator: headbreaker.generators.flipflop,
-				horizontalPiecesCount: rows,
-				verticalPiecesCount: columns
+				horizontalPiecesCount: 5,
+				verticalPiecesCount: 5
 			});
 
-			autogen.shuffle(0.7);
+			// autogen.shuffle(0.7);
 			autogen.draw();
 		};
 	};
 </script>
-
-<input
-	bind:this={imageInput}
-	type="file"
-	name="imageInput"
-	id="imageInput"
-	on:change={() => createPuzzle(URL.createObjectURL(imageInput.files[0]))}
-	class="mt-10 ml-10"
-/>
 
 <div id="puzzle" class="border-4 my-10 mx-auto w-max" />

@@ -1,9 +1,22 @@
 <script lang="ts">
-	import { stringify } from 'postcss';
 	import { onMount } from 'svelte';
+	import Initial from './initial.svelte';
 
 	let playerName: string = '';
-	let dialogBox: HTMLDialogElement;
+	let nameDialogBox: HTMLDialogElement;
+	let imageDialogBox: HTMLDialogElement;
+
+	let availableImages: string[] = [
+		'/scenery-1.jpg',
+		'/scenery-2.jpg',
+		'/scenery-3.jpg',
+		'/scenery-4.jpg',
+		'/scenery-5.jpg',
+		'/scenery-6.jpg'
+	];
+
+	let selectedImage: string;
+	let showPuzzle: boolean = false;
 
 	onMount(() => {
 		let puzzler = localStorage.getItem('puzzler');
@@ -15,12 +28,14 @@
 		}
 
 		if (!playerName) {
-			dialogBox.showModal();
+			nameDialogBox.showModal();
 		}
 	});
+
+	$: console.log('selected image', selectedImage);
 </script>
 
-<dialog bind:this={dialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>
+<dialog bind:this={nameDialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>
 	<form
 		method="dialog"
 		on:submit={() => localStorage.setItem('puzzler', JSON.stringify({ name: playerName }))}
@@ -40,14 +55,50 @@
 {#if playerName}
 	<section class="p-10">
 		<h1>Hello {playerName}! <br /> What are you upto today?</h1>
-		<button class="btn">Play</button>
-		<button class="btn">Create</button>
-		<button class="btn">Contend</button>
+		<button class="btn" on:click={() => imageDialogBox.showModal()}>choose puzzle</button>
 	</section>
+{/if}
+
+<dialog
+	bind:this={imageDialogBox}
+	class="backdrop:bg-black p-10"
+	on:submit={() => (showPuzzle = true)}
+>
+	<form method="dialog">
+		<h2>Select image</h2>
+		<div class="flex gap-5 mt-5 flex-wrap">
+			{#each availableImages as image, i (image)}
+				<label
+					for="availableImage-{i + 1}"
+					class="relative border-2 p-2 {selectedImage === image
+						? 'border-blue-600'
+						: 'border-transparent'}"
+				>
+					<span class="flex justify-center">Scenery {i + 1}</span>
+					<img src={image} alt="availableImage-{i + 1}" class="h-28" />
+					<input
+						type="radio"
+						name="selectedImage"
+						id="availableImage-{i + 1}"
+						class="absolute inset-0 opacity-0 cursor-pointer"
+						value={image}
+						bind:group={selectedImage}
+					/>
+				</label>
+			{/each}
+		</div>
+		<button type="submit" disabled={!selectedImage} class="block mt-5 btn mx-auto"
+			>Let's play</button
+		>
+	</form>
+</dialog>
+
+{#if showPuzzle}
+	<Initial bind:imageInput={selectedImage} />
 {/if}
 
 <style lang="postcss">
 	.btn {
-		@apply p-2 border-2 border-blue-600 rounded-md;
+		@apply p-2 border-2 border-blue-600 rounded-md disabled:bg-slate-500 disabled:border-none;
 	}
 </style>
