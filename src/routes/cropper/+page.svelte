@@ -42,7 +42,7 @@
 <div class="max-w-5xl mx-auto">
 	<img
 		bind:this={image}
-		src="/scenery-1.jpg"
+		src="/scenery-1.webp"
 		alt="scenery"
 		class="block max-w-full cropper-hidden"
 	/>
