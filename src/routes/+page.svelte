@@ -3,6 +3,7 @@
 	import Initial from './initial.svelte';
 	import Cropper from 'cropperjs';
 	import 'cropperjs/dist/cropper.css';
+	import Puzzle from './Puzzle.svelte';
 
 	let playerName: string = '';
 	let nameDialogBox: HTMLDialogElement;
@@ -10,6 +11,7 @@
 	let cropImageDialogBox: HTMLDialogElement;
 	let cropper: Cropper;
 	let cropperInputImage: HTMLImageElement;
+	let croppedImage: string;
 
 	let availableImages: string[] = [
 		'/scenery-1.webp',
@@ -17,7 +19,8 @@
 		'/scenery-3.webp',
 		'/scenery-4.webp',
 		'/scenery-5.webp',
-		'/scenery-6.webp'
+		'/scenery-6.webp',
+		'/emm.webp'
 	];
 
 	let selectedImage: string;
@@ -41,19 +44,13 @@
 				cropper.setCropBoxData({ height: pieceSize * rows, width: pieceSize * columns });
 			}
 		});
-
-		console.log('CALLED');
 		return;
 	};
 	const cropImage = () => {
-		let dataUrl = cropper
+		croppedImage = cropper
 			.getCroppedCanvas({ height: pieceSize * rows, width: pieceSize * columns })
 			.toDataURL('image/webp', 1);
-		const newImg = document.createElement('img');
-		// const url = URL.createObjectURL(blob);
-
-		newImg.src = dataUrl;
-		document.body.appendChild(newImg);
+		return;
 	};
 
 	onMount(() => {
@@ -159,7 +156,7 @@
 </dialog>
 
 <dialog bind:this={cropImageDialogBox}>
-	<div class="max-w-5xl mx-auto">
+	<div class="max-w-3xl mx-auto">
 		<img
 			bind:this={cropperInputImage}
 			src={selectedImage}
@@ -171,13 +168,14 @@
 		on:click={() => {
 			cropImage();
 			cropImageDialogBox.close();
+			showPuzzle = true;
 		}}>Crop</button
 	>
 </dialog>
 
-<!-- {#if showPuzzle}
-	<Initial bind:imageInput={selectedImage} />
-{/if} -->
+{#if showPuzzle}
+	<Puzzle imageInput={croppedImage} {rows} {columns} {pieceSize} />
+{/if}
 
 <style lang="postcss">
 	.btn {

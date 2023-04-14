@@ -1,0 +1,72 @@
+<script lang="ts">
+	// import headbreaker from 'headbreaker';
+	import { onMount } from 'svelte';
+
+	export let imageInput: any, rows: number, columns: number, pieceSize: number;
+
+	let canvasWidth: number, canvasHeight: number;
+
+	onMount(() => {
+		canvasWidth = window.innerWidth - 100;
+		canvasHeight = rows * pieceSize + 100;
+		createPuzzle(imageInput);
+	});
+
+	let createPuzzle = (imgSrc: any = '') => {
+		let img = new Image();
+
+		if (!imgSrc) {
+			img.src = '/scenery-1.webp';
+		} else {
+			img.src = imgSrc;
+		}
+
+		let puzzleDiameter: number;
+
+		if (columns >= 8 && rows < 7) {
+			if (columns === 10) {
+				puzzleDiameter = 7 * pieceSize + 10;
+			} else {
+				puzzleDiameter = 6 * pieceSize + 15;
+			}
+		} else {
+			puzzleDiameter = rows * pieceSize + 15;
+		}
+
+		img.onload = () => {
+			const autogen = new headbreaker.Canvas('puzzle', {
+				width: canvasWidth,
+				height: canvasHeight,
+				pieceSize: pieceSize,
+				proximity: 20,
+				borderFill: 10,
+				strokeWidth: 1.0,
+				lineSoftness: 0.18,
+				image: img,
+				outline: new headbreaker.outline.Rounded(),
+				preventOffstageDrag: true,
+				fixed: true,
+				puzzleDiameter: puzzleDiameter
+			});
+			autogen.adjustImagesToPuzzleHeight();
+			// autogen.adjustImagesToPuzzleWidth()
+
+			autogen.autogenerate({
+				insertsGenerator: headbreaker.generators.flipflop,
+				horizontalPiecesCount: columns,
+				verticalPiecesCount: rows
+			});
+
+			autogen.shuffle(0.7);
+			autogen.draw();
+			autogen.attachSolvedValidator();
+			autogen.onValid(() => {
+				setTimeout(() => {
+					alert('completed');
+				}, 1000);
+			});
+		};
+	};
+</script>
+
+<div id="puzzle" class="border-4 my-10 mx-auto w-max" />
