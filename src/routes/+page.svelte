@@ -7,12 +7,12 @@
 	let imageDialogBox: HTMLDialogElement;
 
 	let availableImages: string[] = [
-		'/scenery-1.jpg',
-		'/scenery-2.jpg',
-		'/scenery-3.jpg',
-		'/scenery-4.jpg',
-		'/scenery-5.jpg',
-		'/scenery-6.jpg'
+		'/scenery-1.webp',
+		'/scenery-2.webp',
+		'/scenery-3.webp',
+		'/scenery-4.webp',
+		'/scenery-5.webp',
+		'/scenery-6.webp'
 	];
 
 	let selectedImage: string;
@@ -31,8 +31,6 @@
 			nameDialogBox.showModal();
 		}
 	});
-
-	$: console.log('selected image', selectedImage);
 </script>
 
 <dialog bind:this={nameDialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>

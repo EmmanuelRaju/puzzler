@@ -24,8 +24,8 @@
 			img.src = imgSrc;
 		}
 
-		let canvasWidth: number = 500,
-			canvasHeight: number = 500;
+		let canvasWidth: number = 800,
+			canvasHeight: number = 600;
 
 		let puzzleWidth: number = 400,
 			puzzleHeight: number = 400;
@@ -34,7 +34,7 @@
 			imgHeight: number,
 			rows: number,
 			columns: number,
-			pieceSize: number = 100,
+			pieceSize: number = 102.4,
 			scaleX: number,
 			scaleY: number,
 			imgType: 'landscape' | 'portrait';
