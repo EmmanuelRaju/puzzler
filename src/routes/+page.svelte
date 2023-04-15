@@ -5,14 +5,15 @@
 	import Puzzle from './Puzzle.svelte';
 	import { puzzleStore } from '$lib/stores/puzzleStore';
 	import PuzzleConfigForm from './PuzzleConfigForm.svelte';
+	import { fade } from 'svelte/transition';
+	import CustomImage from './CustomImage.svelte';
 
-	let playerName: string = '';
+	let playerName: string = 'stranger';
 	let nameDialogBox: HTMLDialogElement;
-	let imageDialogBox: HTMLDialogElement;
 	let cropImageDialogBox: HTMLDialogElement;
 	let cropper: Cropper;
-	let cropperInputImage: HTMLImageElement;
 	let croppedImage: string;
+	let cropperInputImage: HTMLImageElement;
 
 	let availableImages: string[] = [
 		'/scenery-1.webp',
@@ -24,14 +25,15 @@
 		'/emm.webp'
 	];
 
+	let showOptions: boolean = true;
 	let showPuzzle: boolean = false;
 	let showSelectPuzzle: boolean = false;
 	let showPuzzleConfigForm: boolean = false;
+	let showCropImage: boolean = false;
 
 	const callCropper = () => {
 		cropper = new Cropper(cropperInputImage, {
 			dragMode: 'move',
-			modal: true,
 			restore: false,
 			guides: false,
 			center: false,
@@ -46,6 +48,7 @@
 				});
 			}
 		});
+
 		return;
 	};
 	const cropImage = () => {
@@ -56,6 +59,10 @@
 			})
 			.toDataURL('image/webp', 1);
 		return;
+	};
+
+	const staggeredCall = (func: Function, timeout: number) => {
+		setTimeout(func, timeout);
 	};
 
 	onMount(() => {
@@ -92,56 +99,77 @@
 	</form>
 </dialog>
 
-{#if playerName}
-	<section class="p-10">
-		<h1>Hello {playerName}! <br /> What are you upto today?</h1>
+{#if showOptions}
+	<section class="p-10" transition:fade={{ duration: 500 }}>
+		<h1>Hello <span class="capitalize">{playerName}!</span> <br /> What are you upto today?</h1>
 		<div class="flex gap-5 mt-5">
-			<button class="btn" on:click={() => (showSelectPuzzle = true)}>Choose</button>
+			<button
+				class="btn"
+				on:click={() => {
+					showOptions = false;
+					staggeredCall(() => (showSelectPuzzle = true), 500);
+				}}>Choose</button
+			>
 			<button class="btn">Create</button>
 			<button class="btn">Contend</button>
 		</div>
 	</section>
 {/if}
 
-<form
-	method="dialog"
-	class="{showSelectPuzzle ? 'flex' : 'hidden'}  flex-col gap-10"
-	on:submit|preventDefault={() => ((showSelectPuzzle = false), (showPuzzleConfigForm = true))}
->
-	<div class="border-2 p-2 rounded-md">
-		<h2>Select puzzle</h2>
-		<div class="mt-5 flex gap-5 flex-wrap">
-			{#each availableImages as image, i (image)}
-				<label
-					for="availableImage-{i + 1}"
-					class="relative border-2 p-2 rounded-md {$puzzleStore.selectedImage === image
-						? 'border-blue-600'
-						: 'border-transparent'}"
-				>
-					<span class="flex justify-center">Puzzle {i + 1}</span>
-					<img src={image} alt="availableImage-{i + 1}" class="h-28" />
-					<input
-						type="radio"
-						name="selectedImage"
-						id="availableImage-{i + 1}"
-						class="absolute inset-0 opacity-0 cursor-pointer"
-						value={image}
-						bind:group={$puzzleStore.selectedImage}
-						required
-					/>
-				</label>
-			{/each}
+{#if showSelectPuzzle}
+	<form
+		class="flex flex-col gap-10"
+		transition:fade={{ duration: 500 }}
+		on:submit|preventDefault={() => {
+			showSelectPuzzle = false;
+			staggeredCall(() => (showPuzzleConfigForm = true), 500);
+		}}
+	>
+		<div>
+			<h2>Select puzzle</h2>
+			<div class="mt-5 flex gap-5 flex-wrap">
+				{#each availableImages as image, i (image)}
+					<label
+						for="availableImage-{i + 1}"
+						class="relative border-2 p-2 rounded-md {$puzzleStore.selectedImage === image
+							? 'border-blue-600'
+							: 'border-transparent'}"
+					>
+						<span class="flex justify-center">Puzzle {i + 1}</span>
+						<CustomImage src={image} alt="availableImage-{i + 1}" classes="h-28" />
+						<input
+							type="radio"
+							name="selectedImage"
+							id="availableImage-{i + 1}"
+							class="absolute inset-0 opacity-0 cursor-pointer"
+							value={image}
+							bind:group={$puzzleStore.selectedImage}
+							required
+						/>
+					</label>
+				{/each}
+			</div>
 		</div>
-	</div>
-	<button type="submit" class="block mt-5 btn mx-auto">Next</button>
-</form>
+		<div class="flex gap-5 mt-5 justify-center">
+			<button
+				class="btn"
+				on:click|preventDefault={() => {
+					showSelectPuzzle = false;
+					staggeredCall(() => (showOptions = true), 500);
+				}}>Back</button
+			>
+			<button type="submit" class="btn">Next</button>
+		</div>
+	</form>
+{/if}
 
 <PuzzleConfigForm
 	bind:show={showPuzzleConfigForm}
 	submitFn={() => {
-		cropImageDialogBox.showModal();
 		callCropper();
 		showPuzzleConfigForm = false;
+		showCropImage = true;
+		cropImageDialogBox.show();
 	}}
 	backFn={() => {
 		showPuzzleConfigForm = false;
@@ -149,22 +177,35 @@
 	}}
 />
 
-<dialog bind:this={cropImageDialogBox}>
-	<div class="max-w-3xl mx-auto">
-		<img
-			bind:this={cropperInputImage}
-			src={$puzzleStore.selectedImage}
-			alt="puzzleImage"
-			class="block max-w-full cropper-hidden"
-		/>
-	</div>
-	<button
-		on:click={() => {
+<dialog bind:this={cropImageDialogBox} transition:fade={{ duration: 500 }}>
+	<form
+		method="dialog"
+		on:submit|preventDefault={() => {
 			cropImage();
 			cropImageDialogBox.close();
 			showPuzzle = true;
-		}}>Crop</button
+		}}
 	>
+		<div class="max-w-4xl mx-auto">
+			<img
+				bind:this={cropperInputImage}
+				src={$puzzleStore.selectedImage}
+				alt="puzzleImage"
+				class="block max-w-full cropper-hidden"
+			/>
+		</div>
+		<div class="flex gap-5 mt-5 justify-center">
+			<button
+				on:click|preventDefault={() => {
+					showCropImage = false;
+					showPuzzleConfigForm = true;
+				}}
+			>
+				Back
+			</button>
+			<button class="btn">Crop</button>
+		</div>
+	</form>
 </dialog>
 
 {#if showPuzzle}
