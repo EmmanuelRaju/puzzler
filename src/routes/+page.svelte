@@ -6,7 +6,9 @@
 	import { puzzleStore } from '$lib/stores/puzzleStore';
 	import PuzzleConfigForm from './PuzzleConfigForm.svelte';
 	import { fade } from 'svelte/transition';
-	import CustomImage from './CustomImage.svelte';
+	import Playername from './Playername.svelte';
+	import SelectPuzzleForm from './SelectPuzzleForm.svelte';
+	import CropImage from './CropImage.svelte';
 
 	let playerName: string = 'stranger';
 	let nameDialogBox: HTMLDialogElement;
@@ -14,16 +16,6 @@
 	let cropper: Cropper;
 	let croppedImage: string;
 	let cropperInputImage: HTMLImageElement;
-
-	let availableImages: string[] = [
-		'/scenery-1.webp',
-		'/scenery-2.webp',
-		'/scenery-3.webp',
-		'/scenery-4.webp',
-		'/scenery-5.webp',
-		'/scenery-6.webp',
-		'/emm.webp'
-	];
 
 	let showOptions: boolean = true;
 	let showPuzzle: boolean = false;
@@ -76,27 +68,14 @@
 			}
 		}
 
-		if (!playerName) {
+		if (!playerName || playerName === 'stranger') {
 			nameDialogBox.showModal();
 		}
 	});
 </script>
 
 <dialog bind:this={nameDialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>
-	<form
-		method="dialog"
-		on:submit={() => localStorage.setItem('puzzler', JSON.stringify({ name: playerName }))}
-	>
-		<h2>Hello there! What do we call you?</h2>
-		<input
-			type="text"
-			id="playerName"
-			placeholder="Enter name"
-			bind:value={playerName}
-			class="mt-5 p-2"
-		/>
-		<button type="submit" disabled={!playerName} class="block mt-5 btn mx-auto">Let me in</button>
-	</form>
+	<Playername bind:playerName />
 </dialog>
 
 {#if showOptions}
@@ -116,52 +95,17 @@
 	</section>
 {/if}
 
-{#if showSelectPuzzle}
-	<form
-		class="flex flex-col gap-10"
-		transition:fade={{ duration: 500 }}
-		on:submit|preventDefault={() => {
-			showSelectPuzzle = false;
-			staggeredCall(() => (showPuzzleConfigForm = true), 500);
-		}}
-	>
-		<div>
-			<h2>Select puzzle</h2>
-			<div class="mt-5 flex gap-5 flex-wrap">
-				{#each availableImages as image, i (image)}
-					<label
-						for="availableImage-{i + 1}"
-						class="relative border-2 p-2 rounded-md {$puzzleStore.selectedImage === image
-							? 'border-blue-600'
-							: 'border-transparent'}"
-					>
-						<span class="flex justify-center">Puzzle {i + 1}</span>
-						<CustomImage src={image} alt="availableImage-{i + 1}" classes="h-28" />
-						<input
-							type="radio"
-							name="selectedImage"
-							id="availableImage-{i + 1}"
-							class="absolute inset-0 opacity-0 cursor-pointer"
-							value={image}
-							bind:group={$puzzleStore.selectedImage}
-							required
-						/>
-					</label>
-				{/each}
-			</div>
-		</div>
-		<div class="flex gap-5 mt-5 justify-center">
-			<button
-				class="btn"
-				on:click|preventDefault={() => {
-					showSelectPuzzle = false;
-					staggeredCall(() => (showOptions = true), 500);
-				}}>Back</button
-			>
-			<button type="submit" class="btn">Next</button>
-		</div>
-	</form>
-{/if}
+<SelectPuzzleForm
+	bind:show={showSelectPuzzle}
+	submitFn={() => {
+		showSelectPuzzle = false;
+		staggeredCall(() => (showPuzzleConfigForm = true), 500);
+	}}
+	backFn={() => {
+		showSelectPuzzle = false;
+		staggeredCall(() => (showOptions = true), 500);
+	}}
+/>
 
 <PuzzleConfigForm
 	bind:show={showPuzzleConfigForm}
@@ -178,34 +122,18 @@
 />
 
 <dialog bind:this={cropImageDialogBox} transition:fade={{ duration: 500 }}>
-	<form
-		method="dialog"
-		on:submit|preventDefault={() => {
+	<CropImage
+		bind:cropperInputImage
+		submitFn={() => {
 			cropImage();
 			cropImageDialogBox.close();
 			showPuzzle = true;
 		}}
-	>
-		<div class="max-w-4xl mx-auto">
-			<img
-				bind:this={cropperInputImage}
-				src={$puzzleStore.selectedImage}
-				alt="puzzleImage"
-				class="block max-w-full cropper-hidden"
-			/>
-		</div>
-		<div class="flex gap-5 mt-5 justify-center">
-			<button
-				on:click|preventDefault={() => {
-					showCropImage = false;
-					showPuzzleConfigForm = true;
-				}}
-			>
-				Back
-			</button>
-			<button class="btn">Crop</button>
-		</div>
-	</form>
+		backFn={() => {
+			showCropImage = false;
+			showPuzzleConfigForm = true;
+		}}
+	/>
 </dialog>
 
 {#if showPuzzle}
