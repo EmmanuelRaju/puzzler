@@ -7,7 +7,7 @@
 		columns: number,
 		pieceSize: number,
 		strokeColor: string,
-		pieceOutline: 'rounded' | 'triangle';
+		pieceOutline: string;
 
 	let canvasWidth: number, canvasHeight: number;
 
@@ -39,6 +39,7 @@
 		}
 
 		img.onload = () => {
+			//@ts-ignore
 			const puzzleInstance = new headbreaker.Canvas('puzzle', {
 				width: canvasWidth,
 				height: canvasHeight,
@@ -49,6 +50,7 @@
 				lineSoftness: 0.18,
 				image: img,
 				strokeColor: strokeColor,
+				//@ts-ignore
 				outline: pieceOutline === 'rounded' ? new headbreaker.outline.Rounded() : '',
 				preventOffstageDrag: true,
 				fixed: true,
@@ -57,6 +59,7 @@
 			puzzleInstance.adjustImagesToPuzzleHeight();
 
 			puzzleInstance.autogenerate({
+				//@ts-ignore
 				insertsGenerator: headbreaker.generators.flipflop,
 				horizontalPiecesCount: columns,
 				verticalPiecesCount: rows

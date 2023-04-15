@@ -3,6 +3,8 @@
 	import Cropper from 'cropperjs';
 	import 'cropperjs/dist/cropper.css';
 	import Puzzle from './Puzzle.svelte';
+	import { puzzleStore } from '$lib/stores/puzzleStore';
+	import PuzzleConfigForm from './PuzzleConfigForm.svelte';
 
 	let playerName: string = '';
 	let nameDialogBox: HTMLDialogElement;
@@ -22,13 +24,9 @@
 		'/emm.webp'
 	];
 
-	let selectedImage: string;
 	let showPuzzle: boolean = false;
-	let pieceSize: number = 100,
-		rows: number = 5,
-		columns: number = 5,
-		strokeColor: string = '#000',
-		pieceOutline: 'rounded' | 'triangle' = 'rounded';
+	let showSelectPuzzle: boolean = false;
+	let showPuzzleConfigForm: boolean = false;
 
 	const callCropper = () => {
 		cropper = new Cropper(cropperInputImage, {
@@ -42,14 +40,20 @@
 			cropBoxResizable: false,
 			toggleDragModeOnDblclick: false,
 			ready() {
-				cropper.setCropBoxData({ height: pieceSize * rows, width: pieceSize * columns });
+				cropper.setCropBoxData({
+					height: $puzzleStore.pieceSize * $puzzleStore.rows,
+					width: $puzzleStore.pieceSize * $puzzleStore.columns
+				});
 			}
 		});
 		return;
 	};
 	const cropImage = () => {
 		croppedImage = cropper
-			.getCroppedCanvas({ height: pieceSize * rows, width: pieceSize * columns })
+			.getCroppedCanvas({
+				height: $puzzleStore.pieceSize * $puzzleStore.rows,
+				width: $puzzleStore.pieceSize * $puzzleStore.columns
+			})
 			.toDataURL('image/webp', 1);
 		return;
 	};
@@ -58,7 +62,9 @@
 		let puzzler = localStorage.getItem('puzzler');
 		if (puzzler) {
 			puzzler = JSON.parse(puzzler);
+			//@ts-ignore
 			if (puzzler?.name) {
+				//@ts-ignore
 				playerName = puzzler?.name;
 			}
 		}
@@ -89,118 +95,65 @@
 {#if playerName}
 	<section class="p-10">
 		<h1>Hello {playerName}! <br /> What are you upto today?</h1>
-		<button class="btn" on:click={() => imageDialogBox.showModal()}>choose puzzle</button>
+		<div class="flex gap-5 mt-5">
+			<button class="btn" on:click={() => (showSelectPuzzle = true)}>Choose</button>
+			<button class="btn">Create</button>
+			<button class="btn">Contend</button>
+		</div>
 	</section>
 {/if}
 
-<dialog
-	bind:this={imageDialogBox}
-	class="backdrop:bg-black p-10 rounded-md"
-	on:submit={() => {
+<form
+	method="dialog"
+	class="{showSelectPuzzle ? 'flex' : 'hidden'}  flex-col gap-10"
+	on:submit|preventDefault={() => ((showSelectPuzzle = false), (showPuzzleConfigForm = true))}
+>
+	<div class="border-2 p-2 rounded-md">
+		<h2>Select puzzle</h2>
+		<div class="mt-5 flex gap-5 flex-wrap">
+			{#each availableImages as image, i (image)}
+				<label
+					for="availableImage-{i + 1}"
+					class="relative border-2 p-2 rounded-md {$puzzleStore.selectedImage === image
+						? 'border-blue-600'
+						: 'border-transparent'}"
+				>
+					<span class="flex justify-center">Puzzle {i + 1}</span>
+					<img src={image} alt="availableImage-{i + 1}" class="h-28" />
+					<input
+						type="radio"
+						name="selectedImage"
+						id="availableImage-{i + 1}"
+						class="absolute inset-0 opacity-0 cursor-pointer"
+						value={image}
+						bind:group={$puzzleStore.selectedImage}
+						required
+					/>
+				</label>
+			{/each}
+		</div>
+	</div>
+	<button type="submit" class="block mt-5 btn mx-auto">Next</button>
+</form>
+
+<PuzzleConfigForm
+	bind:show={showPuzzleConfigForm}
+	submitFn={() => {
 		cropImageDialogBox.showModal();
 		callCropper();
+		showPuzzleConfigForm = false;
 	}}
->
-	<form method="dialog" class="flex flex-col gap-10">
-		<div class="border-2 p-2 rounded-md">
-			<h2>Select image</h2>
-			<div class="mt-5 flex gap-5 flex-wrap">
-				{#each availableImages as image, i (image)}
-					<label
-						for="availableImage-{i + 1}"
-						class="relative border-2 p-2 rounded-md {selectedImage === image
-							? 'border-blue-600'
-							: 'border-transparent'}"
-					>
-						<span class="flex justify-center">Scenery {i + 1}</span>
-						<img src={image} alt="availableImage-{i + 1}" class="h-28" />
-						<input
-							type="radio"
-							name="selectedImage"
-							id="availableImage-{i + 1}"
-							class="absolute inset-0 opacity-0 cursor-pointer"
-							value={image}
-							bind:group={selectedImage}
-							required
-						/>
-					</label>
-				{/each}
-			</div>
-		</div>
-		<div class="flex flex-wrap gap-5">
-			<div class="selectPuzzle-form-elements">
-				<label for="pieceSize">Puzzle piece size</label>
-				<input
-					type="range"
-					name="pieceSize"
-					id="pieceSize"
-					min="50"
-					max="150"
-					step="10"
-					bind:value={pieceSize}
-				/>
-				<span>{pieceSize}px</span>
-			</div>
-			<div class="selectPuzzle-form-elements">
-				<label for="rows">Number of rows</label>
-				<input type="range" step="1" min="5" max="10" bind:value={rows} />
-				<span>{rows}</span>
-			</div>
-			<div class="selectPuzzle-form-elements">
-				<label for="colums">Number of columns</label>
-				<input type="range" step="1" min="5" max="10" bind:value={columns} />
-				<span>{columns}</span>
-			</div>
-			<div class="selectPuzzle-form-elements">
-				<label for="strokeColor">Puzzle piece border color</label>
-				<input type="color" bind:value={strokeColor} />
-				<span>{strokeColor}</span>
-			</div>
-			<div class="selectPuzzle-form-elements">
-				<h2>Puzzle piece border style</h2>
-				<label
-					for="roundedOutline"
-					class="relative border-2 p-2 rounded-md {pieceOutline === 'rounded'
-						? 'border-blue-600'
-						: 'border-transparent'}"
-				>
-					<input
-						id="roundedOutline"
-						name="pieceOutline"
-						type="radio"
-						value="rounded"
-						class="absolute inset-0 opacity-0 cursor-pointer"
-						bind:group={pieceOutline}
-					/>
-					Rounded</label
-				>
-				<label
-					for="triangleOutline"
-					class="relative border-2 p-2 rounded-md {pieceOutline === 'triangle'
-						? 'border-blue-600'
-						: 'border-transparent'}"
-				>
-					<input
-						id="triangleOutline"
-						name="pieceOutline"
-						type="radio"
-						value="triangle"
-						class="absolute inset-0 opacity-0 cursor-pointer"
-						bind:group={pieceOutline}
-					/>
-					Triangle</label
-				>
-			</div>
-		</div>
-		<button type="submit" class="block mt-5 btn mx-auto">Next</button>
-	</form>
-</dialog>
+	backFn={() => {
+		showPuzzleConfigForm = false;
+		showSelectPuzzle = true;
+	}}
+/>
 
 <dialog bind:this={cropImageDialogBox}>
 	<div class="max-w-3xl mx-auto">
 		<img
 			bind:this={cropperInputImage}
-			src={selectedImage}
+			src={$puzzleStore.selectedImage}
 			alt="puzzleImage"
 			class="block max-w-full cropper-hidden"
 		/>
@@ -215,15 +168,12 @@
 </dialog>
 
 {#if showPuzzle}
-	<Puzzle imageInput={croppedImage} {rows} {columns} {pieceSize} {strokeColor} {pieceOutline} />
+	<Puzzle
+		imageInput={croppedImage}
+		rows={$puzzleStore.rows}
+		columns={$puzzleStore.columns}
+		pieceSize={$puzzleStore.pieceSize}
+		strokeColor={$puzzleStore.strokeColor}
+		pieceOutline={$puzzleStore.pieceOutline}
+	/>
 {/if}
-
-<style lang="postcss">
-	.btn {
-		@apply p-2 border-2 border-blue-600 rounded-md disabled:bg-slate-500 disabled:border-none;
-	}
-
-	.selectPuzzle-form-elements {
-		@apply border-2 p-2 rounded-md flex gap-5 items-center;
-	}
-</style>
