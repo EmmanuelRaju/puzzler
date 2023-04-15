@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Initial from './initial.svelte';
 	import Cropper from 'cropperjs';
 	import 'cropperjs/dist/cropper.css';
 	import Puzzle from './Puzzle.svelte';
@@ -27,7 +26,9 @@
 	let showPuzzle: boolean = false;
 	let pieceSize: number = 100,
 		rows: number = 5,
-		columns: number = 5;
+		columns: number = 5,
+		strokeColor: string = '#000',
+		pieceOutline: 'rounded' | 'triangle' = 'rounded';
 
 	const callCropper = () => {
 		cropper = new Cropper(cropperInputImage, {
@@ -126,7 +127,7 @@
 				{/each}
 			</div>
 		</div>
-		<div class="flex justify-between flex-wrap gap-5">
+		<div class="flex flex-wrap gap-5">
 			<div class="selectPuzzle-form-elements">
 				<label for="pieceSize">Puzzle piece size</label>
 				<input
@@ -138,7 +139,7 @@
 					step="10"
 					bind:value={pieceSize}
 				/>
-				<span>{pieceSize}</span>
+				<span>{pieceSize}px</span>
 			</div>
 			<div class="selectPuzzle-form-elements">
 				<label for="rows">Number of rows</label>
@@ -149,6 +150,46 @@
 				<label for="colums">Number of columns</label>
 				<input type="range" step="1" min="5" max="10" bind:value={columns} />
 				<span>{columns}</span>
+			</div>
+			<div class="selectPuzzle-form-elements">
+				<label for="strokeColor">Puzzle piece border color</label>
+				<input type="color" bind:value={strokeColor} />
+				<span>{strokeColor}</span>
+			</div>
+			<div class="selectPuzzle-form-elements">
+				<h2>Puzzle piece border style</h2>
+				<label
+					for="roundedOutline"
+					class="relative border-2 p-2 rounded-md {pieceOutline === 'rounded'
+						? 'border-blue-600'
+						: 'border-transparent'}"
+				>
+					<input
+						id="roundedOutline"
+						name="pieceOutline"
+						type="radio"
+						value="rounded"
+						class="absolute inset-0 opacity-0 cursor-pointer"
+						bind:group={pieceOutline}
+					/>
+					Rounded</label
+				>
+				<label
+					for="triangleOutline"
+					class="relative border-2 p-2 rounded-md {pieceOutline === 'triangle'
+						? 'border-blue-600'
+						: 'border-transparent'}"
+				>
+					<input
+						id="triangleOutline"
+						name="pieceOutline"
+						type="radio"
+						value="triangle"
+						class="absolute inset-0 opacity-0 cursor-pointer"
+						bind:group={pieceOutline}
+					/>
+					Triangle</label
+				>
 			</div>
 		</div>
 		<button type="submit" class="block mt-5 btn mx-auto">Next</button>
@@ -174,7 +215,7 @@
 </dialog>
 
 {#if showPuzzle}
-	<Puzzle imageInput={croppedImage} {rows} {columns} {pieceSize} />
+	<Puzzle imageInput={croppedImage} {rows} {columns} {pieceSize} {strokeColor} {pieceOutline} />
 {/if}
 
 <style lang="postcss">

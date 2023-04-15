@@ -2,7 +2,12 @@
 	// import headbreaker from 'headbreaker';
 	import { onMount } from 'svelte';
 
-	export let imageInput: any, rows: number, columns: number, pieceSize: number;
+	export let imageInput: any,
+		rows: number,
+		columns: number,
+		pieceSize: number,
+		strokeColor: string,
+		pieceOutline: 'rounded' | 'triangle';
 
 	let canvasWidth: number, canvasHeight: number;
 
@@ -34,7 +39,7 @@
 		}
 
 		img.onload = () => {
-			const autogen = new headbreaker.Canvas('puzzle', {
+			const puzzleInstance = new headbreaker.Canvas('puzzle', {
 				width: canvasWidth,
 				height: canvasHeight,
 				pieceSize: pieceSize,
@@ -43,24 +48,24 @@
 				strokeWidth: 1.0,
 				lineSoftness: 0.18,
 				image: img,
-				outline: new headbreaker.outline.Rounded(),
+				strokeColor: strokeColor,
+				outline: pieceOutline === 'rounded' ? new headbreaker.outline.Rounded() : '',
 				preventOffstageDrag: true,
 				fixed: true,
 				puzzleDiameter: puzzleDiameter
 			});
-			autogen.adjustImagesToPuzzleHeight();
-			// autogen.adjustImagesToPuzzleWidth()
+			puzzleInstance.adjustImagesToPuzzleHeight();
 
-			autogen.autogenerate({
+			puzzleInstance.autogenerate({
 				insertsGenerator: headbreaker.generators.flipflop,
 				horizontalPiecesCount: columns,
 				verticalPiecesCount: rows
 			});
 
-			autogen.shuffle(0.7);
-			autogen.draw();
-			autogen.attachSolvedValidator();
-			autogen.onValid(() => {
+			puzzleInstance.shuffle(0.7);
+			puzzleInstance.draw();
+			puzzleInstance.attachSolvedValidator();
+			puzzleInstance.onValid(() => {
 				setTimeout(() => {
 					alert('completed');
 				}, 1000);
