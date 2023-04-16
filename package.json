@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev --port 8080",
+		"dev": "vite dev --port 8080 --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"cropperjs": "^1.5.13",
 		"headbreaker": "^2.0.0"
 	}
 }
