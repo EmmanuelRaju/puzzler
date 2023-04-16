@@ -12,7 +12,7 @@
 	let canvasWidth: number, canvasHeight: number;
 
 	onMount(() => {
-		canvasWidth = window.innerWidth - 100;
+		canvasWidth = columns * pieceSize + 300;
 		canvasHeight = rows * pieceSize + 100;
 		createPuzzle(imageInput);
 	});

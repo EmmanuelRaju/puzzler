@@ -172,12 +172,12 @@
 			submitFn={() => {
 				cropImage();
 				cropImageDialogBox.close();
-				showPuzzle = true;
+				staggeredCall(() => (showPuzzle = true), 500);
 			}}
 			backFn={() => {
 				cropper.destroy();
 				cropImageDialogBox.close();
-				showPuzzleConfigForm = true;
+				staggeredCall(() => (showPuzzleConfigForm = true), 500);
 			}}
 		/>
 	</dialog>
@@ -191,7 +191,7 @@
 			<button
 				on:click={() => {
 					showPuzzle = false;
-					showOptions = true;
+					staggeredCall(() => (showOptions = true), 500);
 					puzzleStore.set(initialValues);
 				}}
 				class="btn">Back to menu</button
