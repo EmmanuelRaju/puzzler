@@ -7,18 +7,21 @@
 	let loading: boolean = true;
 </script>
 
-<div class="w-20 h-20 mx-auto mt-5 loader {loading ? '' : 'hidden'}" />
-
-<img
-	transition:fade
-	{src}
-	class="{classes} {loading ? 'opacity-0' : ''}"
-	{alt}
-	on:load={() => (loading = false)}
-/>
+<div class="{classes} {loading ? 'loader' : ''} ">
+	<img
+		transition:fade
+		{src}
+		class="{loading ? 'opacity-0' : ''} duration-100"
+		{alt}
+		on:load={() => (loading = false)}
+	/>
+</div>
 
 <style>
 	.loader {
+		width: 80px;
+		height: 80px;
+		margin: 0 auto;
 		border: 8px solid #f3f3f3;
 		border-radius: 50%;
 		border-top: 8px solid #3498db;

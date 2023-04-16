@@ -1,7 +1,6 @@
 <script lang="ts">
 	// import headbreaker from 'headbreaker';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
 
 	export let imageInput: any,
 		rows: number,
@@ -78,4 +77,4 @@
 	};
 </script>
 
-<div id="puzzle" class="border-4 my-10 mx-auto w-max" transition:fade={{ duration: 500 }} />
+<div id="puzzle" class="border-4 border-dashed rounded-md my-10 mx-auto w-max" />
