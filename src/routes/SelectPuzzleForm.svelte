@@ -30,13 +30,18 @@
 			{#each availableImages as image, i (image)}
 				<label
 					for="availableImage-{i + 1}"
-					class="relative border-2 p-2 flex flex-col justify-between rounded-md bg-gray-200 {$puzzleStore.selectedImage ===
+					class="relative p-2 border-2 flex flex-col justify-between rounded-md {$puzzleStore.selectedImage ===
 					image
-						? 'border-blue-600'
-						: 'border-transparent'} hover:scale-110 duration-100"
+						? 'border-amarnath'
+						: 'border-transparent'} hover:scale-110 duration-100 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)]"
 				>
 					<CustomImage src={image} alt="availableImage-{i + 1}" classes="rounded-md" />
-					<span class="flex justify-center mt-2 font-medium">Puzzle {i + 1}</span>
+					<span
+						class="flex justify-center mt-2 font-medium text-xl text-amarnath {$puzzleStore.selectedImage ===
+						image
+							? 'font-rapier'
+							: 'font-rapier_hollow'}">{i + 1}</span
+					>
 					<input
 						type="radio"
 						name="selectedImage"

@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@neoconfetti/svelte": "^1.0.0",
 		"cropperjs": "^1.5.13",
 		"headbreaker": "^2.0.0"
 	}

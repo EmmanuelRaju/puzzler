@@ -4,9 +4,34 @@
 @tailwind utilities;
 
 body {
-	@apply p-10 mx-auto;
+	@apply p-10 mx-auto font-tamba text-white bg-black;
 }
 
 .btn {
-	@apply text-lg font-medium p-2 border-2 border-blue-600 rounded-md disabled:bg-slate-500 disabled:border-none hover:bg-blue-600 hover:text-white;
+	@apply text-3xl font-semibold  font-rapier_hollow text-amarnath px-4 py-2 border-2 border-amarnath rounded-md disabled:bg-slate-500 disabled:border-none hover:bg-amarnath hover:text-white;
+}
+
+@font-face {
+	font-family: 'rapier';
+	src: url('/rapier.woff') format('woff');
+}
+
+@font-face {
+	font-family: 'rapier-hollow';
+	src: url('/rapier-hollow.woff') format('woff');
+}
+
+@font-face {
+	font-family: 'rapier-hollow-italic';
+	src: url('/rapier-hollow-italic.woff') format('woff');
+}
+
+@font-face {
+	font-family: 'tamba';
+	src: url('/tamba.woff') format('woff');
+}
+
+input,
+btn {
+	@apply focus:outline-none;
 }

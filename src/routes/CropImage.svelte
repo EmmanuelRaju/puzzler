@@ -7,7 +7,10 @@
 		backFn = () => {};
 </script>
 
-<section class="flex flex-col items-center mt-10 gap-5 pb-10" transition:fade={{ duration: 500 }}>
+<section
+	class="flex flex-col items-center mt-10 gap-5 pb-10 text-white"
+	transition:fade={{ duration: 500 }}
+>
 	<h2 class="text-4xl capitalize">Final step!</h2>
 	<h3 class="text-3xl">Adjust image in the bounding box</h3>
 	<i
@@ -15,7 +18,7 @@
 		Scroll/Pinch/Drag to adjust)</i
 	>
 	<form method="dialog" on:submit|preventDefault={() => submitFn()}>
-		<div class="flex gap-5 my-5 justify-center">
+		<div class="flex gap-5 mt-5 mb-10 justify-center">
 			<button class="btn" on:click|preventDefault={() => backFn()}> Back </button>
 			<button class="btn">Crop & Play</button>
 		</div>

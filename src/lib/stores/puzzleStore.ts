@@ -5,7 +5,7 @@ const initialValues = {
 	pieceSize: 100,
 	rows: 5,
 	columns: 5,
-	strokeColor: '#000',
+	strokeColor: 'black',
 	pieceOutline: 'rounded'
 };
 

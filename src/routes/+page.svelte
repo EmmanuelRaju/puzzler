@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import Cropper from 'cropperjs';
 	import 'cropperjs/dist/cropper.css';
 	import Puzzle from './Puzzle.svelte';
@@ -10,7 +10,7 @@
 	import SelectPuzzleForm from './SelectPuzzleForm.svelte';
 	import CropImage from './CropImage.svelte';
 
-	let playerName: string = 'stranger';
+	let playerName: string = '';
 	let nameDialogBox: HTMLDialogElement;
 	let cropImageDialogBox: HTMLDialogElement;
 	let cropper: Cropper;
@@ -30,7 +30,7 @@
 		pieceSize: 100,
 		rows: 5,
 		columns: 5,
-		strokeColor: '#000',
+		strokeColor: 'black',
 		pieceOutline: 'rounded'
 	};
 
@@ -89,16 +89,20 @@
 	});
 </script>
 
-<h1 class="text-6xl text-center font-black">PUZZLER</h1>
+<h1 class="text-8xl text-center font-black text-amarnath font-rapier_hollow_italic">PUZZLER</h1>
 
-<dialog bind:this={nameDialogBox} class="backdrop:bg-black p-10" on:cancel|preventDefault>
+<dialog
+	bind:this={nameDialogBox}
+	class="backdrop:bg-black p-10 bg-black text-white"
+	on:cancel|preventDefault
+>
 	<Playername bind:playerName />
 </dialog>
 
 {#if showOptions}
 	<section class="flex flex-col items-center mt-10 gap-5" transition:fade={{ duration: 500 }}>
-		<h2 class="text-4xl capitalize">Hello {playerName}!</h2>
-		<h3 class="text-3xl">What are you upto today?</h3>
+		<h2 class="text-4xl capitalize">Hello {playerName || 'stranger'}!</h2>
+		<h3 class="text-3xl">Ready to play?</h3>
 		<div class="flex gap-5 p-5 mt-5">
 			<div class="option-container">
 				<button
@@ -106,13 +110,13 @@
 					on:click={() => {
 						showOptions = false;
 						staggeredCall(() => (showSelectPuzzle = true), 500);
-					}}>Choose</button
+					}}>Choose puzzle</button
 				>
-				<p class="option-description">
+				<!-- <p class="option-description">
 					Choose from various images and craft it as per your quotient
-				</p>
+				</p> -->
 			</div>
-			<div class="option-container">
+			<!-- <div class="option-container">
 				<button class="btn">Create</button>
 				<p class="option-description">
 					Upload your own image or create one using DALL-E (AI image generation from prompts)
@@ -124,14 +128,15 @@
 					Contend with challengers and rise above ranks (Keep the CODE handy)
 				</p>
 			</div>
+		</div> -->
 		</div>
 	</section>
 {/if}
 
 {#if showSelectPuzzle}
 	<section class="flex flex-col items-center mt-10 gap-5" transition:fade={{ duration: 500 }}>
-		<h2 class="text-4xl capitalize">Good choice!</h2>
-		<h3 class="text-3xl">Select puzzle</h3>
+		<h2 class="text-4xl capitalize">Pick one</h2>
+		<!-- <h3 class="text-3xl">Select puzzle</h3> -->
 		<SelectPuzzleForm
 			bind:show={showSelectPuzzle}
 			submitFn={() => {
@@ -166,7 +171,7 @@
 {/if}
 
 <div class={showCropImage ? '' : 'opacity-0'}>
-	<dialog bind:this={cropImageDialogBox}>
+	<dialog bind:this={cropImageDialogBox} class="bg-black">
 		<CropImage
 			bind:cropperInputImage
 			submitFn={() => {
@@ -187,7 +192,7 @@
 	<section class="flex flex-col items-center mt-10 gap-10" transition:fade={{ duration: 500 }}>
 		<h2 class="text-4xl">Let's play</h2>
 		<div class="flex gap-5 my-5 justify-center">
-			<button on:click={() => finalImageDialogBox.showModal()} class="btn">Peak at solution</button>
+			<button on:click={() => finalImageDialogBox.showModal()} class="btn">Peek at solution</button>
 			<button
 				on:click={() => {
 					showPuzzle = false;
@@ -209,10 +214,10 @@
 
 		<dialog
 			bind:this={finalImageDialogBox}
-			class="drop-shadow-[0_35px_35px_rgba(0,0,0,0.75)] p-10 rounded-md"
+			class="bg-black absolute inset-0 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)] p-10 rounded-md w-[100vh] h-[100vh]"
 		>
-			<img src={croppedImage} alt="final" />
-			<button on:click={() => finalImageDialogBox.close()} class="btn flex mx-auto mt-5"
+			<img src={croppedImage} alt="final" class="mx-auto" />
+			<button on:click={() => finalImageDialogBox.close()} class="btn flex mx-auto mt-14"
 				>Close</button
 			>
 		</dialog>
