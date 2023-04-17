@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 
 const initialValues = {
 	selectedImage: '',
+	uploadedImage: '',
 	pieceSize: 100,
 	rows: 5,
 	columns: 5,
