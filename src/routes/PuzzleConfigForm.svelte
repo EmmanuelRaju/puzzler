@@ -108,7 +108,7 @@
 						class="absolute inset-0 opacity-0 cursor-pointer"
 						bind:group={$puzzleStore.strokeColor}
 					/>
-					<div class="w-12 h-6 bg-black" /></label
+					<div class="w-12 h-8 bg-gray-800 rounded-md" /></label
 				>
 				<label
 					for="whiteColor"
@@ -125,7 +125,7 @@
 						class="absolute inset-0 opacity-0 cursor-pointer"
 						bind:group={$puzzleStore.strokeColor}
 					/>
-					<div class="w-12 h-6 bg-slate-100" /></label
+					<div class="w-12 h-8 bg-slate-100 rounded-md" /></label
 				>
 				<span class="form-element-value">{$puzzleStore.strokeColor}</span>
 			</div>
@@ -139,7 +139,7 @@
 
 <style lang="postcss">
 	.form-elements {
-		@apply w-full p-3 border-4 border-amarnath border-t-0 border-r-0 rounded-md flex gap-5 items-center;
+		@apply w-full p-3 border-4 border-amarnath border-t-0 border-r-0 rounded-md flex gap-7 items-center;
 	}
 
 	.form-element-value {
