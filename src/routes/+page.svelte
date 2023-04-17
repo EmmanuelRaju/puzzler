@@ -196,6 +196,8 @@
 			<button
 				on:click={() => {
 					finalImageDialogBox.showModal();
+					document.body.scrollTop = 0;
+					document.documentElement.scrollTop = 0;
 					document.body.classList.add('overflow-hidden');
 					document.body.classList.add('h-screen');
 				}}

@@ -1,38 +1,24 @@
-# create-svelte
+# PUZZLER
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A custom jigsaw builder app developed by leveraging cool features of Sveltekit and JS community libraries.
 
-## Creating a project
+## Gameplay
 
-If you're seeing this, you've probably already done this step. Congrats!
+Players can upload their own images and turn them into jigsaw puzzles. Few pictures are provided by default so that you can get started right way!
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Future roadmap
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- Planning to integrate AI for image generation based on text prompts so that players can unleash their creativity
+- Puzzles can be shared as challenges and achivements can be tracked on leaderboards
 
-## Developing
+## Integrated libraries
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- [Cropper JS](https://github.com/fengyuanchen/cropperjs)
+- [Headbreaker JS](https://github.com/flbulgarelli/headbreaker)
+- [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss)
+- [NeoConfetti](https://github.com/puruvj/neoconfetti)
 
-```bash
-npm run dev
+## Reference links
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [Working Demo](https://puzzler-psi.vercel.app/)
+- [Gameplay](https://www.loom.com/share/69a36026e858474181f6e336b31373dc)
