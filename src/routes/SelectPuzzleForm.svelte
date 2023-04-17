@@ -2,6 +2,7 @@
 	import CustomImage from './CustomImage.svelte';
 	import { fade } from 'svelte/transition';
 	import { puzzleStore } from '$lib/stores/puzzleStore';
+	import { onMount } from 'svelte';
 
 	export let show: boolean,
 		classes: string = '',
@@ -18,8 +19,6 @@
 		'/scenery-7.webp',
 		'/scenery-8.webp'
 	];
-
-	let uploadedImage: any;
 </script>
 
 {#if show}
@@ -31,15 +30,15 @@
 		<div class="mt-5 grid grid-cols-3 gap-10 p-2 justify-around items-end">
 			<label
 				for=""
-				class="relative p-2 border-2 rounded-md h-full {uploadedImage &&
-				$puzzleStore.selectedImage === uploadedImage
+				class="relative p-2 border-2 rounded-md h-full {$puzzleStore.uploadedImage &&
+				$puzzleStore.selectedImage === $puzzleStore.uploadedImage
 					? 'border-amarnath'
 					: 'border-transparent'} hover:scale-110 duration-100"
 			>
-				{#if uploadedImage}
+				{#if $puzzleStore.uploadedImage}
 					<div class="relative">
 						<img
-							src={uploadedImage}
+							src={$puzzleStore.uploadedImage}
 							alt="uploaded"
 							class="rounded-md mx-auto max-h-[320px] object-contain object-center w-full h-full"
 						/>
@@ -48,13 +47,15 @@
 							name="selectedImage"
 							id="uploadedImage"
 							class="absolute inset-0 opacity-0 cursor-pointer"
-							value={uploadedImage}
+							value={$puzzleStore.uploadedImage}
 							bind:group={$puzzleStore.selectedImage}
 							required
 						/>
 					</div>
 					<button
-						on:click|preventDefault={() => (uploadedImage = '')}
+						on:click|preventDefault={() => {
+							$puzzleStore.uploadedImage = '';
+						}}
 						class="block w-max mx-auto px-4 py-3 mt-2 bg-amarnath rounded-md z-10">Remove</button
 					>
 				{:else}
@@ -69,8 +70,8 @@
 							name="uploadImage"
 							class="absolute inset-0 opacity-0 cursor-pointer"
 							on:change={(e) => {
-								uploadedImage = URL.createObjectURL(e.target?.files[0]);
-								$puzzleStore.selectedImage = uploadedImage;
+								$puzzleStore.uploadedImage = URL.createObjectURL(e.target?.files[0]);
+								$puzzleStore.selectedImage = $puzzleStore.uploadedImage;
 							}}
 						/>
 					</div>

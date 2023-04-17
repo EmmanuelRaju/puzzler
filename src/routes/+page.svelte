@@ -27,6 +27,7 @@
 
 	let initialValues = {
 		selectedImage: '',
+		uploadedImage: '',
 		pieceSize: 100,
 		rows: 5,
 		columns: 5,
@@ -110,7 +111,7 @@
 					on:click={() => {
 						showOptions = false;
 						staggeredCall(() => (showSelectPuzzle = true), 500);
-					}}>Choose puzzle</button
+					}}>Build puzzle</button
 				>
 				<!-- <p class="option-description">
 					Choose from various images and craft it as per your quotient
@@ -171,7 +172,7 @@
 {/if}
 
 <div class={showCropImage ? '' : 'opacity-0'}>
-	<dialog bind:this={cropImageDialogBox} class="bg-black">
+	<dialog bind:this={cropImageDialogBox} class="bg-black mt-5">
 		<CropImage
 			bind:cropperInputImage
 			submitFn={() => {
@@ -192,7 +193,14 @@
 	<section class="flex flex-col items-center mt-10 gap-10" transition:fade={{ duration: 500 }}>
 		<h2 class="text-4xl">Let's play</h2>
 		<div class="flex gap-5 my-5 justify-center">
-			<button on:click={() => finalImageDialogBox.showModal()} class="btn">Peek at solution</button>
+			<button
+				on:click={() => {
+					finalImageDialogBox.showModal();
+					document.body.classList.add('overflow-hidden');
+					document.body.classList.add('h-screen');
+				}}
+				class="btn">Peek at solution</button
+			>
 			<button
 				on:click={() => {
 					showPuzzle = false;
@@ -217,8 +225,13 @@
 			class="bg-black absolute inset-0 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)] p-10 rounded-md w-[100vh] h-[100vh]"
 		>
 			<img src={croppedImage} alt="final" class="mx-auto" />
-			<button on:click={() => finalImageDialogBox.close()} class="btn flex mx-auto mt-14"
-				>Close</button
+			<button
+				on:click={() => {
+					finalImageDialogBox.close();
+					document.body.classList.remove('overflow-hidden');
+					document.body.classList.remove('h-screen');
+				}}
+				class="btn flex mx-auto mt-14">Close</button
 			>
 		</dialog>
 	</section>
@@ -226,17 +239,8 @@
 
 <style lang="postcss">
 	.option-container {
-		@apply p-3 flex flex-col items-center gap-5 border-x-4 border-dotted;
+		@apply p-3 flex flex-col items-center gap-5;
 	}
-
-	.option-container:first-child {
-		@apply border-l-0;
-	}
-
-	.option-container:last-child {
-		@apply border-r-0;
-	}
-
 	.option-description {
 		@apply italic max-w-sm text-center;
 	}
