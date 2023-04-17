@@ -90,7 +90,9 @@
 	});
 </script>
 
-<h1 class="text-8xl text-center font-black text-amarnath font-rapier_hollow_italic">PUZZLER</h1>
+<h1 class="text-5xl md:text-8xl text-center font-black text-amarnath font-rapier_hollow_italic">
+	PUZZLER
+</h1>
 
 <dialog
 	bind:this={nameDialogBox}
@@ -102,8 +104,8 @@
 
 {#if showOptions}
 	<section class="flex flex-col items-center mt-10 gap-5" transition:fade={{ duration: 500 }}>
-		<h2 class="text-4xl capitalize">Hello {playerName || 'stranger'}!</h2>
-		<h3 class="text-3xl">Ready to play?</h3>
+		<h2 class="text-3xl md:text-4xl capitalize">Hello {playerName || 'stranger'}!</h2>
+		<h3 class="text-2xl md:text-3xl">Ready to play?</h3>
 		<div class="flex gap-5 p-5 mt-5">
 			<div class="option-container">
 				<button
@@ -136,7 +138,7 @@
 
 {#if showSelectPuzzle}
 	<section class="flex flex-col items-center mt-10 gap-5" transition:fade={{ duration: 500 }}>
-		<h2 class="text-4xl capitalize">Pick one</h2>
+		<h2 class="text-3xl md:text-4xl capitalize">Pick one</h2>
 		<!-- <h3 class="text-3xl">Select puzzle</h3> -->
 		<SelectPuzzleForm
 			bind:show={showSelectPuzzle}
@@ -154,7 +156,7 @@
 
 {#if showPuzzleConfigForm}
 	<section class="flex flex-col items-center mt-10 gap-10" transition:fade={{ duration: 500 }}>
-		<h2 class="text-4xl">Configure your puzzle</h2>
+		<h2 class="text-3xl md:text-4xl">Configure your puzzle</h2>
 		<PuzzleConfigForm
 			bind:show={showPuzzleConfigForm}
 			submitFn={() => {
@@ -224,7 +226,7 @@
 
 		<dialog
 			bind:this={finalImageDialogBox}
-			class="bg-black absolute inset-0 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)] p-10 rounded-md w-[100vh] h-[100vh]"
+			class="bg-black absolute inset-0 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)] p-10 rounded-md w-screen h-screen"
 		>
 			<img src={croppedImage} alt="final" class="mx-auto" />
 			<button

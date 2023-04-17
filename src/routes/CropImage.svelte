@@ -8,12 +8,12 @@
 </script>
 
 <section
-	class="flex flex-col items-center mt-10 gap-5 pb-10 text-white"
+	class="flex flex-col items-center mt-10 gap-5 pb-10 text-white text-center"
 	transition:fade={{ duration: 500 }}
 >
-	<h2 class="text-4xl capitalize">Final step!</h2>
-	<h3 class="text-3xl">Adjust image in the bounding box</h3>
-	<i
+	<h2 class="text-3xl md:text-4xl capitalize">Final step!</h2>
+	<h3 class="text-2xl md:text-3xl">Adjust image in the bounding box</h3>
+	<i class="text-sm md:text-base"
 		>(Bounding box is created based on the configuration options set in the previous step.
 		Scroll/Pinch/Drag to adjust)</i
 	>
