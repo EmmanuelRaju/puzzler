@@ -9,7 +9,7 @@ Players can upload their own images and turn them into jigsaw puzzles. Few pictu
 ## Future roadmap
 
 - Planning to integrate AI for image generation based on text prompts so that players can unleash their creativity
-- Puzzles can be shared as challenges and achivements can be tracked on leaderboards
+- Puzzles can be shared as challenges and achievements can be tracked on leaderboards
 
 ## Integrated libraries
 
