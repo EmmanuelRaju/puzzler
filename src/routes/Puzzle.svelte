@@ -56,7 +56,7 @@
 				//@ts-ignore
 				outline: pieceOutline === 'rounded' ? new headbreaker.outline.Rounded() : '',
 				preventOffstageDrag: true,
-				fixed: true,
+				responsive: true,
 				puzzleDiameter: puzzleDiameter
 			});
 			puzzleInstance.adjustImagesToPuzzleHeight();

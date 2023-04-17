@@ -12,7 +12,7 @@
 	<form transition:fade={{ duration: 500 }} class={classes}>
 		<div class="flex flex-col gap-14">
 			<div class="form-elements">
-				<h2 class="w-72 text-xl">Puzzle piece attachment style</h2>
+				<h2 class="form-element-label">Puzzle attachment style</h2>
 				<label
 					for="roundedOutline"
 					class="relative border-2 border-dotted p-1 rounded-md {$puzzleStore.pieceOutline ===
@@ -63,7 +63,7 @@
 				<span class="form-element-value">{$puzzleStore.pieceSize}px</span>
 			</div> -->
 			<div class="form-elements">
-				<label for="rows" class="w-72 text-xl">Number of rows</label>
+				<label for="rows" class="form-element-label">Number of rows</label>
 				<input
 					type="range"
 					step="1"
@@ -75,7 +75,7 @@
 				<span class="form-element-value">{$puzzleStore.rows}</span>
 			</div>
 			<div class="form-elements">
-				<label for="colums" class="w-72 text-xl">Number of columns</label>
+				<label for="colums" class="form-element-label">Number of columns</label>
 				<input
 					type="range"
 					step="1"
@@ -92,7 +92,7 @@
 				<span class="form-element-value">{$puzzleStore.strokeColor}</span>
 			</div> -->
 			<div class="form-elements">
-				<h2 class="w-72 text-xl">Puzzle piece border color</h2>
+				<h2 class="form-element-label">Puzzle piece border color</h2>
 				<label
 					for="blackColor"
 					class="relative border-2 border-dotted p-1 rounded-md {$puzzleStore.strokeColor ===
@@ -139,7 +139,11 @@
 
 <style lang="postcss">
 	.form-elements {
-		@apply w-full p-3 border-4 border-amarnath border-t-0 border-r-0 rounded-md flex gap-7 items-center;
+		@apply w-full p-3 border-4 border-amarnath border-t-0 border-r-0 rounded-md flex gap-5 items-center;
+	}
+
+	.form-element-label {
+		@apply text-lg md:w-72;
 	}
 
 	.form-element-value {

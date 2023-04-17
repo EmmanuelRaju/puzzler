@@ -2,7 +2,6 @@
 	import CustomImage from './CustomImage.svelte';
 	import { fade } from 'svelte/transition';
 	import { puzzleStore } from '$lib/stores/puzzleStore';
-	import { onMount } from 'svelte';
 
 	export let show: boolean,
 		classes: string = '',
@@ -10,14 +9,14 @@
 		backFn = () => {};
 
 	let availableImages: string[] = [
-		'/scenery-1.webp',
-		'/scenery-2.webp',
-		'/scenery-3.webp',
-		'/scenery-4.webp',
-		'/scenery-5.webp',
-		'/scenery-6.webp',
-		'/scenery-7.webp',
-		'/scenery-8.webp'
+		'/puzzleImages/scenery-1.webp',
+		'/puzzleImages/scenery-2.webp',
+		'/puzzleImages/scenery-3.webp',
+		'/puzzleImages/scenery-4.webp',
+		'/puzzleImages/scenery-5.webp',
+		'/puzzleImages/scenery-6.webp',
+		'/puzzleImages/scenery-7.webp',
+		'/puzzleImages/scenery-8.webp'
 	];
 </script>
 
@@ -27,7 +26,9 @@
 		transition:fade={{ duration: 500 }}
 		on:submit|preventDefault={() => submitFn()}
 	>
-		<div class="mt-5 grid grid-cols-3 gap-10 p-2 justify-around items-end">
+		<div
+			class="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 p-2 justify-around items-end"
+		>
 			<label
 				for=""
 				class="relative p-2 border-2 rounded-md h-full {$puzzleStore.uploadedImage &&
@@ -86,12 +87,7 @@
 						: 'border-transparent'} hover:scale-110 duration-100 drop-shadow-[0px_50px_45px_rgba(92,15,39,0.9)]"
 				>
 					<CustomImage src={image} alt="availableImage-{i + 1}" classes="rounded-md" />
-					<span
-						class="flex justify-center mt-2 font-medium text-3xl text-amarnath {$puzzleStore.selectedImage ===
-						image
-							? 'font-rapier'
-							: 'font-rapier_hollow'}">{i + 1}</span
-					>
+					<span class="flex justify-center mt-2 font-medium text-3xl text-amarnath">{i + 1}</span>
 					<input
 						type="radio"
 						name="selectedImage"
