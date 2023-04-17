@@ -1,7 +1,10 @@
 <script lang="ts">
 	// import headbreaker from 'headbreaker';
 	import { onMount } from 'svelte';
+	import { confetti } from '@neoconfetti/svelte';
+	import { tick } from 'svelte';
 
+	let isVisible = false;
 	export let imageInput: any,
 		rows: number,
 		columns: number,
@@ -70,11 +73,19 @@
 			puzzleInstance.attachSolvedValidator();
 			puzzleInstance.onValid(() => {
 				setTimeout(() => {
-					alert('completed');
+					isVisible = true;
+					// alert('completed');
 				}, 1000);
 			});
 		};
 	};
 </script>
 
-<div id="puzzle" class="border-4 border-dashed rounded-md my-10 mx-auto w-max" />
+{#if isVisible}
+	<div class="flex flex-col items-center">
+		<div use:confetti />
+		<h2 class="text-4xl">Congratulations!!! Go back to menu and try others</h2>
+	</div>
+{/if}
+
+<div id="puzzle" class="border-2 border-dotted border-amarnath rounded-md my-10 mx-auto w-max" />
